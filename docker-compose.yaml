@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/node/Dockerfile
+    container_name: chat-service
+    ports:
+      - '${PORT:-3333}:3333'
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - '.:/usr/app'
+    depends_on:
+      - db
+  db:
+    image: mongo
+    container_name: chat-db
+    ports:
+      - '27017:27017'
+    volumes:
+      - .docker/data:/data/db
