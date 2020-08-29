@@ -1,25 +1,14 @@
-import 'reflect-metadata'
-import express from 'express'
-import cors from 'cors'
-import 'express-async-errors'
-import bodyParser from 'body-parser'
-import routes from './routes'
+import http from 'http'
+import socketio from 'socket.io'
+import app from './app'
 
-import './database'
+const server = http.createServer(app)
+const io = socketio(server)
 
-const app = express()
-
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  }),
-)
-
-app.use(express.json())
-
-app.use(cors())
-
-app.use(routes)
+io.on('connection', socket => {
+  // eslint-disable-next-line no-console
+  console.log('User connected', socket)
+})
 
 app.listen(3333, () => {
   // eslint-disable-next-line no-console
