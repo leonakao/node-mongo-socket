@@ -3,5 +3,5 @@
 /tmp/*
 !/tmp/.gitkeep
 /data
-.docker
+.docker/data
 .vscode
