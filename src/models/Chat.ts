@@ -1,18 +1,19 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import { UserDocument } from './User'
-import { MessageDocument } from './Message'
+import '@models/User'
+import '@models/Message'
 import { ReferenceModel } from './Reference'
 
 export interface ChatDocument extends Document {
-  members: UserDocument[]
-  messages: MessageDocument[]
-  reference: ReferenceModel
+  members?: string[]
+  messages?: string[]
+  references: ReferenceModel[]
 }
 
 const ChatSchema = new Schema(
   {
-    content: { type: String, required: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
+    references: [{ type: Object, required: true }],
   },
   {
     timestamps: true,
