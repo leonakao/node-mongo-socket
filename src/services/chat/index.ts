@@ -17,7 +17,7 @@ export default {
       if (token === 'token') {
         return next()
       }
-      next(new SocketAuthenticationError('Invalid Token'))
+      return next(new SocketAuthenticationError('Invalid Token'))
     })
 
     io.on('connection', socket => {
