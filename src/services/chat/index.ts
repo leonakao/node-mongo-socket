@@ -1,4 +1,4 @@
-import socketio from 'socket.io'
+import socketio, { Socket } from 'socket.io'
 import http from 'http'
 import { SocketAuthenticationError } from '../../errors'
 
@@ -12,7 +12,7 @@ export default {
       origins: allowedOrigins,
     })
 
-    io.use((socket, next) => {
+    io.use((socket: Socket, next: Function) => {
       const token = socket.handshake.query.Authorization || null
       if (token === 'token') {
         return next()
