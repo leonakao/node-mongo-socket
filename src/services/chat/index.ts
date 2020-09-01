@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import socketio, { Socket } from 'socket.io'
 import http from 'http'
+import User from '@models/User'
 import { SocketAuthenticationError } from '../../errors'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
@@ -15,23 +16,51 @@ export default {
 
     const ChatManager = io.of('/chat')
 
-    ChatManager.use((socket: Socket, next: Function) => {
-      const token = socket.handshake.query.Authorization || null
-      if (token === 'token') {
-        return next()
+    ChatManager.use(async (socket: Socket, next: Function) => {
+      try {
+        const { Authorization, userId, userName } = socket.handshake.query
+        if (Authorization === 'user') {
+          let user = (
+            await User.find({ reference: userId, type: 'user' }).limit(1)
+          )[0]
+          if (!user) {
+            user = await User.create({
+              reference: userId,
+              type: 'user',
+              role: 'user',
+              name: userName,
+              socket: socket.id,
+            })
+            console.log(`User registered: ${user.reference}`)
+            return next()
+          }
+          await user.updateOne({
+            socket: socket.id,
+          })
+          console.log(`User authenticated: ${user.reference}`)
+          return next()
+        }
+        return next(new SocketAuthenticationError('Invalid Token'))
+      } catch (err) {
+        return next(new Error(err))
       }
-      return next(new SocketAuthenticationError('Invalid Token'))
     })
 
-    ChatManager.on('connection', user => {
-      console.log(`User connected: ${user.id}`)
+    ChatManager.on('connection', async socket => {
+      const user = (await User.find({ socket: socket.id }).limit(1))[0]
+      if (!user) {
+        socket.disconnect(true)
+      }
 
-      user.on('disconnect', reason => {
-        console.log(`User disconnected: ${user.id}`)
+      socket.on('disconnect', async reason => {
+        user.updateOne({
+          socket: null,
+        })
+        console.log(`socket disconnected: ${socket.id}`)
         console.log(`Reason: ${reason}`)
       })
 
-      user.on('error', error => {
+      socket.on('error', error => {
         console.log(`User error: ${error}`)
       })
     })
