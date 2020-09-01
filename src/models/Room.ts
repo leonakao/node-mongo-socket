@@ -3,13 +3,13 @@ import '@models/User'
 import '@models/Message'
 import { ReferenceModel } from './Reference'
 
-export interface ChatDocument extends Document {
+export interface RoomDocument extends Document {
   members?: string[]
   messages?: string[]
   references: ReferenceModel[]
 }
 
-const ChatSchema = new Schema(
+const RoomSchema = new Schema(
   {
     members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
@@ -20,4 +20,4 @@ const ChatSchema = new Schema(
   },
 )
 
-export default mongoose.model<ChatDocument>('Chat', ChatSchema)
+export default mongoose.model<RoomDocument>('Room', RoomSchema)
