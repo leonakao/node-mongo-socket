@@ -4,6 +4,7 @@ import '@models/Message'
 import { ReferenceModel } from './Reference'
 
 export interface RoomDocument extends Document {
+  name: string
   members?: string[]
   messages?: string[]
   references: ReferenceModel[]
@@ -11,6 +12,7 @@ export interface RoomDocument extends Document {
 
 const RoomSchema = new Schema(
   {
+    name: { type: String, required: true },
     members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
     references: [{ type: Object, required: true }],
