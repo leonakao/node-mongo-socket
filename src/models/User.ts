@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export interface UserDocument extends Document {
   name: string
-  image: string
   type: string
   reference: string
   socket: string
@@ -11,7 +10,6 @@ export interface UserDocument extends Document {
 const UserSchema = new Schema(
   {
     name: { type: String, required: true },
-    image: { type: String, required: false },
     type: { type: String, required: true },
     reference: { type: String, required: true },
     socket: { type: String, required: false },
