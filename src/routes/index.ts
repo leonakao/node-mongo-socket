@@ -1,8 +1,11 @@
 import { Router } from 'express'
-import RoomRoutes from './rooms.routes'
+import RoomsRoutes from './rooms.routes'
+import UsersRoutes from './users.routes'
 
 const router = Router()
 
-router.use('/rooms', RoomRoutes)
+router.use('/rooms', RoomsRoutes)
+
+router.use('/users', UsersRoutes)
 
 export default router

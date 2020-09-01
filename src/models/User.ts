@@ -13,7 +13,7 @@ const UserSchema = new Schema(
     name: { type: String, required: true },
     type: { type: String, required: true },
     role: { type: String, required: true },
-    reference: { type: String, required: true },
+    reference: { type: String, required: true, dropDups: true },
     socket: { type: String, required: false },
   },
   {
