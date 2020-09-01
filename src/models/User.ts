@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 export interface UserDocument extends Document {
   name: string
   type: string
-  reference: string
+  role: string
   socket: string
 }
 
@@ -11,7 +11,7 @@ const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     type: { type: String, required: true },
-    reference: { type: String, required: true },
+    role: { type: String, required: true },
     socket: { type: String, required: false },
   },
   {
