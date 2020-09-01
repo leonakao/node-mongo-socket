@@ -10,9 +10,10 @@ roomRouter.get('/', async (req, res) => {
 })
 
 roomRouter.post('/', async (req, res) => {
-  const { members, references } = req.body
+  const { members, references, name } = req.body
 
   const room = await Room.create({
+    name,
     members,
     references,
   })
