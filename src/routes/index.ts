@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import ChatRoutes from './chats.routes'
+import RoomRoutes from './rooms.routes'
 
 const router = Router()
 
-router.use('/chats', ChatRoutes)
+router.use('/rooms', RoomRoutes)
 
 export default router
