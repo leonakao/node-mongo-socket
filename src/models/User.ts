@@ -1,19 +1,24 @@
 import mongoose, { Document, Schema } from 'mongoose'
 
+interface Reference {
+  type: string
+  id: string
+}
 export interface UserDocument extends Document {
   name: string
-  type: string
+  reference: Reference
   role: string
-  reference: string
   devices: string[]
 }
 
 const UserSchema = new Schema(
   {
     name: { type: String, required: true },
-    type: { type: String, required: true },
+    reference: {
+      type: { type: String, required: true },
+      id: { type: String, required: true },
+    },
     role: { type: String, required: true },
-    reference: { type: String, required: true, dropDups: true },
     devices: [{ type: String, required: false }],
   },
   {

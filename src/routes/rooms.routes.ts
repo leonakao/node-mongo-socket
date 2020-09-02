@@ -10,12 +10,12 @@ roomsRoutes.get('/', async (req, res) => {
 })
 
 roomsRoutes.post('/', async (req, res) => {
-  const { members, references, name } = req.body
+  const { members, name, type = 'user_order' } = req.body
 
   const room = await Room.create({
     name,
     members,
-    references,
+    type,
   })
 
   return res.status(201).json(room)
