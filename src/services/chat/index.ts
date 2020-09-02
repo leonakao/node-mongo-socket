@@ -29,14 +29,13 @@ export default {
               type: 'user',
               role: 'user',
               name: userName,
-              socket: socket.id,
+              devices: [socket.id],
             })
             console.log(`User registered: ${user.reference}`)
             return next()
           }
-          await user.updateOne({
-            socket: socket.id,
-          })
+          user.devices.push(socket.id)
+          user.save()
           console.log(`User authenticated: ${user.reference}`)
           return next()
         }
@@ -53,9 +52,12 @@ export default {
       }
 
       socket.on('disconnect', async reason => {
-        user.updateOne({
-          socket: null,
-        })
+        try {
+          user.devices.splice(user.devices.indexOf(socket.id), 1)
+          user.save()
+        } catch (err) {
+          console.log('Error while remove socket id: ', err)
+        }
         console.log(`socket disconnected: ${socket.id}`)
         console.log(`Reason: ${reason}`)
       })

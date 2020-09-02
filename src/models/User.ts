@@ -5,7 +5,7 @@ export interface UserDocument extends Document {
   type: string
   role: string
   reference: string
-  socket: string
+  devices: string[]
 }
 
 const UserSchema = new Schema(
@@ -14,7 +14,7 @@ const UserSchema = new Schema(
     type: { type: String, required: true },
     role: { type: String, required: true },
     reference: { type: String, required: true, dropDups: true },
-    socket: { type: String, required: false },
+    devices: [{ type: String, required: false }],
   },
   {
     timestamps: true,
