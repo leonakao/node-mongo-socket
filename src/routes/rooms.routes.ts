@@ -1,15 +1,15 @@
 import { Router } from 'express'
 import Room from '@models/Room'
 
-const roomRouter = Router()
+const roomsRoutes = Router()
 
-roomRouter.get('/', async (req, res) => {
+roomsRoutes.get('/', async (req, res) => {
   const rooms = await Room.find().populate('members').populate('messages')
 
   return res.json(rooms)
 })
 
-roomRouter.post('/', async (req, res) => {
+roomsRoutes.post('/', async (req, res) => {
   const { members, references, name } = req.body
 
   const room = await Room.create({
@@ -21,4 +21,8 @@ roomRouter.post('/', async (req, res) => {
   return res.status(201).json(room)
 })
 
-export default roomRouter
+roomsRoutes.delete('/:roomId', async (req, res) => {
+  return res.status(204).json(await Room.findByIdAndDelete(req.params.roomId))
+})
+
+export default roomsRoutes
