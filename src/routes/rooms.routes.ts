@@ -5,7 +5,11 @@ import Room from '@models/Room'
 const roomsRoutes = Router()
 
 roomsRoutes.get('/', async (req, res) => {
-  const rooms = await Room.find().populate('members').populate('messages')
+  const rooms = await Room.find({
+    members: [req.currentUser],
+  })
+    .populate('members')
+    .populate('messages')
 
   return res.json(rooms)
 })
