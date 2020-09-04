@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 interface Reference {
   type: string
-  id: string
+  id?: string
 }
 export interface UserDocument extends Document {
   name: string

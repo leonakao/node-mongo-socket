@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import User from '@models/User'
 import Room from '@models/Room'
 
 const roomsRoutes = Router()
@@ -10,19 +11,27 @@ roomsRoutes.get('/', async (req, res) => {
 })
 
 roomsRoutes.post('/', async (req, res) => {
-  const { members, name, type = 'user_order' } = req.body
+  const { members = [], name, type = 'user_order', orderId } = req.body
+
+  if (type === 'user_order') {
+    const rest = await User.findOne({ reference: { type: 'rest' } })
+    if (rest) {
+      members.push(rest._id)
+    }
+  }
+
+  if (req.currentUser) {
+    members.push(req.currentUser._id)
+  }
 
   const room = await Room.create({
     name,
     members,
     type,
+    orderId,
   })
 
   return res.status(201).json(room)
-})
-
-roomsRoutes.delete('/:roomId', async (req, res) => {
-  return res.status(204).json(await Room.findByIdAndDelete(req.params.roomId))
 })
 
 export default roomsRoutes
