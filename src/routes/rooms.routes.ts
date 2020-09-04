@@ -6,7 +6,7 @@ const roomsRoutes = Router()
 
 roomsRoutes.get('/', async (req, res) => {
   const rooms = await Room.find({
-    members: [req.currentUser],
+    members: { $elemMatch: { $eq: req.currentUser } },
   })
     .populate('members')
     .populate('messages')
@@ -18,7 +18,9 @@ roomsRoutes.post('/', async (req, res) => {
   const { members = [], name, type = 'user_order', orderId } = req.body
 
   if (type === 'user_order') {
-    const rest = await User.findOne({ reference: { type: 'rest' } })
+    const rest = await User.findOne({
+      'reference.type': 'rest',
+    })
     if (rest) {
       members.push(rest._id)
     }
