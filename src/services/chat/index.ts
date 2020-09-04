@@ -21,19 +21,24 @@ export default {
     ChatManager.use(async (socket: Socket, next: Function) => {
       try {
         const { Authorization, userId, userName } = socket.handshake.query
-        if (Authorization === 'user') {
+        if (
+          Authorization === 'user' ||
+          Authorization === 'rest' ||
+          Authorization === 'supt' ||
+          Authorization === 'moto'
+        ) {
           let user = (
-            await User.find({ reference: { id: userId, type: 'user' } }).limit(
-              1,
-            )
+            await User.find({
+              reference: { id: userId, type: Authorization },
+            }).limit(1)
           )[0]
           if (!user) {
             user = await User.create({
               reference: {
                 id: userId,
-                type: 'user',
+                type: Authorization,
               },
-              role: 'user',
+              role: Authorization,
               name: userName,
               devices: [socket.id],
             })
