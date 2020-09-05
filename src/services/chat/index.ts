@@ -102,7 +102,11 @@ export default {
                 roomId,
                 message: {
                   content: message,
-                  from: user,
+                  from: {
+                    _id: user._id,
+                    name: user.name,
+                    reference: user.reference,
+                  },
                 },
               })
             })
