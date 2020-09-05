@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import '@models/User'
+import { UserDocument } from '@models/User'
 import '@models/Message'
 
 export interface RoomDocument extends Document {
   name: string
-  members: string[]
+  members: string[] | UserDocument[]
   messages?: string[]
   type: string
   orderId?: string | number

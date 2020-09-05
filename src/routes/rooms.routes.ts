@@ -40,4 +40,9 @@ roomsRoutes.post('/', async (req, res) => {
   return res.status(201).json(room)
 })
 
+roomsRoutes.delete('/:roomId', async (req, res) => {
+  await Room.findByIdAndDelete(req.params.roomId)
+  res.status(204).send()
+})
+
 export default roomsRoutes

@@ -2,7 +2,9 @@
 import socketio, { Socket } from 'socket.io'
 import http from 'http'
 import User from '@models/User'
+import Room from '@models/Room'
 import { SocketAuthenticationError } from '../../errors'
+import { MessageReceive } from './protocols'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
@@ -57,7 +59,9 @@ export default {
     })
 
     ChatManager.on('connection', async socket => {
-      const user = (await User.find({ devices: [socket.id] }).limit(1))[0]
+      const user = (
+        await User.find({ devices: { $in: [socket.id] } }).limit(1)
+      )[0]
       if (!user) {
         console.log(`user not found: ${socket.id}`)
         setTimeout(async () => {
@@ -85,6 +89,27 @@ export default {
 
       socket.on('error', error => {
         console.log(`User error: ${error}`)
+      })
+
+      socket.on('newMessage', async payload => {
+        try {
+          const { roomId, message }: MessageReceive = payload
+          const room = await Room.findById(roomId).populate('members')
+          room.members.forEach(member => {
+            member.devices.forEach(device => {
+              console.log(device)
+              ChatManager.to(device).emit('newMessage', {
+                roomId,
+                message: {
+                  content: message,
+                  from: user,
+                },
+              })
+            })
+          })
+        } catch (err) {
+          console.error(err)
+        }
       })
     })
   },
