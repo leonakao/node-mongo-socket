@@ -10,7 +10,7 @@ export interface MessageDocument extends Document {
 const MessageSchema = new Schema(
   {
     content: { type: String, required: true },
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    from: { type: Schema.Types.ObjectId, ref: 'User' },
     room: { type: Schema.Types.ObjectId, ref: 'Room' },
   },
   {

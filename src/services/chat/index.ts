@@ -3,6 +3,7 @@ import socketio, { Socket } from 'socket.io'
 import http from 'http'
 import User from '@models/User'
 import Room from '@models/Room'
+import Message from '@models/Message'
 import { SocketAuthenticationError } from '../../errors'
 import { MessageReceive } from './protocols'
 
@@ -94,21 +95,30 @@ export default {
       socket.on('newMessage', async payload => {
         try {
           const { roomId, message }: MessageReceive = payload
+
           const room = await Room.findById(roomId).populate('members')
+          if (!room) throw new Error('Room not found')
+
+          const savedMessage = await Message.create({
+            content: message,
+            from: user._id,
+            room: room._id,
+          })
+
+          await Message.populate(savedMessage, {
+            path: 'from',
+            model: 'User',
+            select: ['reference', 'name'],
+          })
+
+          room.messages.push(savedMessage._id)
+          room.save()
+
+          console.log(savedMessage.populate('from'))
           room.members.forEach(member => {
             member.devices.forEach(device => {
               console.log(device)
-              ChatManager.to(device).emit('newMessage', {
-                roomId,
-                message: {
-                  content: message,
-                  from: {
-                    _id: user._id,
-                    name: user.name,
-                    reference: user.reference,
-                  },
-                },
-              })
+              ChatManager.to(device).emit('newMessage', savedMessage)
             })
           })
         } catch (err) {
