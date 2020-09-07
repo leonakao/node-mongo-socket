@@ -16,7 +16,7 @@ messagesRoutes.get('/:roomId', async (req, res) => {
 
   const messagesHistory = await Message.find({
     room: req.params.roomId,
-  }).populate('from', ['name', 'reference', '_id'])
+  }).populate('from', ['name', 'reference'])
 
   return res.status(200).json(messagesHistory)
 })
