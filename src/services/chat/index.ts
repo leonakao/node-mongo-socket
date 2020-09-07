@@ -114,10 +114,8 @@ export default {
           room.messages.push(savedMessage._id)
           room.save()
 
-          console.log(savedMessage.populate('from'))
           room.members.forEach(member => {
             member.devices.forEach(device => {
-              console.log(device)
               ChatManager.to(device).emit('newMessage', savedMessage)
             })
           })
