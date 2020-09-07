@@ -43,49 +43,37 @@ export default {
               },
               role: Authorization,
               name: userName,
-              devices: [socket.id],
             })
-            console.log(`User registered: ${user.name}`)
-            return next()
           }
-          user.devices.push(socket.id)
-          await user.save()
-          console.log(`User authenticated: ${user.name}`)
+          console.log(`User connected ${user.name}`)
+          // eslint-disable-next-line no-param-reassign
+          socket.currentUser = user
           return next()
         }
-        return next(new SocketAuthenticationError('Invalid Token'))
+        return next(new SocketAuthenticationError('Invalid Token'), false)
       } catch (err) {
-        return next(new Error(err))
+        return next(new Error(err), false)
       }
     })
 
     ChatManager.on('connection', async socket => {
-      const user = (
-        await User.find({ devices: { $in: [socket.id] } }).limit(1)
-      )[0]
-      if (!user) {
-        console.log(`user not found: ${socket.id}`)
-        setTimeout(async () => {
-          const userRetry = (
-            await User.find({ devices: [socket.id] }).limit(1)
-          )[0]
-          if (!userRetry) {
-            console.log('user not found again')
-          }
-        }, 2000)
+      if (!socket.currentUser) {
+        console.log('User not found')
+        socket.disconnect()
       }
+
+      socket.join(socket.currentUser._id)
 
       socket.on('disconnecting', async () => {
         try {
-          user.devices.splice(user.devices.indexOf(socket.id), 1)
-          user.save()
+          socket.leaveAll()
         } catch (err) {
           console.log('Error while remove socket id: ', err)
         }
       })
 
       socket.on('disconnect', async reason => {
-        console.log(`${user.name} disconnected 'cause ${reason}`)
+        console.log(`${socket.currentUser.name} disconnected 'cause ${reason}`)
       })
 
       socket.on('error', error => {
@@ -101,7 +89,7 @@ export default {
 
           const savedMessage = await Message.create({
             content: message,
-            from: user._id,
+            from: socket.currentUser._id,
             room: room._id,
           })
 
@@ -115,9 +103,7 @@ export default {
           room.save()
 
           room.members.forEach(member => {
-            member.devices.forEach(device => {
-              ChatManager.to(device).emit('newMessage', savedMessage)
-            })
+            ChatManager.to(member._id).emit('newMessage', savedMessage)
           })
         } catch (err) {
           console.error(err)

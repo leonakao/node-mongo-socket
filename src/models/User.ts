@@ -8,7 +8,6 @@ export interface UserDocument extends Document {
   name: string
   reference: Reference
   role: string
-  devices: string[]
 }
 
 const UserSchema = new Schema(
@@ -19,7 +18,6 @@ const UserSchema = new Schema(
       id: { type: String, required: true },
     },
     role: { type: String, required: true },
-    devices: [{ type: String, required: false }],
   },
   {
     timestamps: true,
