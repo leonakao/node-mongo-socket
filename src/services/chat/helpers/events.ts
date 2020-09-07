@@ -14,3 +14,11 @@ export async function DisconnectingEventHandler(
 
   socket.leaveAll()
 }
+
+export async function ErrorEventHandler(context: ContextEvent): Promise<void> {
+  const { channel, socket, payload } = context
+
+  const { error } = payload
+
+  channel.to(socket.id).emit('error', error || payload)
+}

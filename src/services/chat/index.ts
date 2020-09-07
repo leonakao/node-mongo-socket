@@ -5,7 +5,7 @@ import Room from '@models/Room'
 import Message from '@models/Message'
 import { MessageReceive } from './protocols'
 import { Authentication } from './middlewares/auth'
-import { DisconnectingEventHandler } from './helpers'
+import { DisconnectingEventHandler, ErrorEventHandler } from './helpers'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
@@ -39,7 +39,7 @@ export default {
       })
 
       socket.on('error', error => {
-        console.log(`User error: ${error}`)
+        ErrorEventHandler({ ...context, payload: { error } })
       })
 
       socket.on('newMessage', async payload => {
