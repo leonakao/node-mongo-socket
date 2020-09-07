@@ -11,8 +11,6 @@ const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
 export default {
   async init(server: http.Server): Promise<void> {
-    await User.updateMany({}, { devices: [] })
-
     const io = socketio(server, {
       pingInterval: 5000,
       pingTimeout: 1000,
