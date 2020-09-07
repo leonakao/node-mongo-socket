@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import User from '@models/User'
 import Room from '@models/Room'
+import messagesRoutes from './messages.routes'
 
 const roomsRoutes = Router()
 
@@ -42,5 +43,7 @@ roomsRoutes.delete('/:roomId', async (req, res) => {
   await Room.findByIdAndDelete(req.params.roomId)
   res.status(204).send()
 })
+
+roomsRoutes.use('/messages', messagesRoutes)
 
 export default roomsRoutes

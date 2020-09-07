@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose'
 import '@models/User'
+import { RoomDocument } from '@models/Room'
 
 export interface MessageDocument extends Document {
   content: string
   from: string
-  room: string
+  room: string | RoomDocument
 }
 
 const MessageSchema = new Schema(
