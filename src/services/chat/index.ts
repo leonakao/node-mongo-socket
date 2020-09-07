@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
-import socketio, { Socket } from 'socket.io'
+import socketio from 'socket.io'
 import http from 'http'
-import User from '@models/User'
 import Room from '@models/Room'
 import Message from '@models/Message'
-import { SocketAuthenticationError } from '../../errors'
 import { MessageReceive } from './protocols'
+import { Authentication } from './middlewares/auth'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
@@ -19,40 +18,7 @@ export default {
 
     const ChatManager = io.of('/chat')
 
-    ChatManager.use(async (socket: Socket, next: Function) => {
-      try {
-        const { Authorization, userId, userName } = socket.handshake.query
-        if (
-          Authorization === 'user' ||
-          Authorization === 'rest' ||
-          Authorization === 'supt' ||
-          Authorization === 'moto'
-        ) {
-          let user = (
-            await User.find({
-              reference: { id: userId, type: Authorization },
-            }).limit(1)
-          )[0]
-          if (!user) {
-            user = await User.create({
-              reference: {
-                id: userId,
-                type: Authorization,
-              },
-              role: Authorization,
-              name: userName,
-            })
-          }
-          console.log(`User connected ${user.name}`)
-          // eslint-disable-next-line no-param-reassign
-          socket.currentUser = user
-          return next()
-        }
-        return next(new SocketAuthenticationError('Invalid Token'), false)
-      } catch (err) {
-        return next(new Error(err), false)
-      }
-    })
+    ChatManager.use(Authentication)
 
     ChatManager.on('connection', async socket => {
       if (!socket.currentUser) {
