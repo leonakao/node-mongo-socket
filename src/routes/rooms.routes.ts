@@ -7,9 +7,7 @@ const roomsRoutes = Router()
 roomsRoutes.get('/', async (req, res) => {
   const rooms = await Room.find({
     members: { $elemMatch: { $eq: req.currentUser } },
-  })
-    .populate('members')
-    .populate('messages')
+  }).populate('messages')
 
   return res.json(rooms)
 })
