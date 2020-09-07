@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import socketio from 'socket.io'
 import http from 'http'
-import Room from '@models/Room'
-import Message from '@models/Message'
-import { MessageReceive } from './protocols'
 import { Authentication } from './middlewares/auth'
-import { DisconnectingEventHandler, ErrorEventHandler } from './helpers'
+import {
+  DisconnectingEventHandler,
+  ErrorEventHandler,
+  NewMessageEventHandler,
+} from './helpers'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
@@ -42,34 +43,8 @@ export default {
         ErrorEventHandler({ ...context, payload: { error } })
       })
 
-      socket.on('newMessage', async payload => {
-        try {
-          const { roomId, message }: MessageReceive = payload
-
-          const room = await Room.findById(roomId).populate('members')
-          if (!room) throw new Error('Room not found')
-
-          const savedMessage = await Message.create({
-            content: message,
-            from: socket.currentUser._id,
-            room: room._id,
-          })
-
-          await Message.populate(savedMessage, {
-            path: 'from',
-            model: 'User',
-            select: ['reference', 'name'],
-          })
-
-          room.messages.push(savedMessage._id)
-          room.save()
-
-          room.members.forEach(member => {
-            ChatManager.to(member._id).emit('newMessage', savedMessage)
-          })
-        } catch (err) {
-          console.error(err)
-        }
+      socket.on('newMessage', payload => {
+        NewMessageEventHandler({ ...context, payload })
       })
     })
   },
