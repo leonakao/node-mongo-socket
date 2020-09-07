@@ -5,6 +5,7 @@ import Room from '@models/Room'
 import Message from '@models/Message'
 import { MessageReceive } from './protocols'
 import { Authentication } from './middlewares/auth'
+import { DisconnectingEventHandler } from './helpers'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
@@ -26,18 +27,15 @@ export default {
         socket.disconnect()
       }
 
+      const context = {
+        channel: ChatManager,
+        socket,
+      }
+
       socket.join(socket.currentUser._id)
 
-      socket.on('disconnecting', async () => {
-        try {
-          socket.leaveAll()
-        } catch (err) {
-          console.log('Error while remove socket id: ', err)
-        }
-      })
-
-      socket.on('disconnect', async reason => {
-        console.log(`${socket.currentUser.name} disconnected 'cause ${reason}`)
+      socket.on('disconnecting', () => {
+        DisconnectingEventHandler({ ...context })
       })
 
       socket.on('error', error => {
