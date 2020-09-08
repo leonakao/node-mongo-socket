@@ -1,6 +1,9 @@
 import { Socket } from 'socket.io'
 import User from '@models/User'
-import { SocketAuthenticationError } from '../../../errors'
+import {
+  SocketAuthenticationError,
+  SocketUnexpectedError,
+} from '../../../errors'
 
 export async function Authentication(
   socket: Socket,
@@ -35,6 +38,6 @@ export async function Authentication(
     }
     return next(new SocketAuthenticationError('Invalid Token'), false)
   } catch (err) {
-    return next(new Error(err), false)
+    return next(new SocketUnexpectedError(err.message), false)
   }
 }

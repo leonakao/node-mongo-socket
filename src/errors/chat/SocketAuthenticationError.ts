@@ -1,6 +1,6 @@
-import { DataSocketError } from './protocols'
+import { DataSocketError, SocketError } from '../protocols'
 
-export class SocketAuthenticationError extends Error {
+export class SocketAuthenticationError extends Error implements SocketError {
   data: DataSocketError
 
   constructor(reason: string) {

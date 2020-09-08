@@ -1,35 +1,25 @@
-import { Socket, Namespace } from 'socket.io'
 import Message from '@models/Message'
 import Room from '@models/Room'
-
-interface ContextEvent {
-  socket: Socket
-  payload?: {
-    error?: string
-    roomId?: string
-    message?: string
-  }
-  channel: Namespace
-}
+import { SocketUnexpectedError } from '../../../errors'
+import { SocketContext } from '../protocols'
+import { ErrorHandler } from '../utils'
 
 export async function DisconnectingEventHandler(
-  context: ContextEvent,
+  context: SocketContext,
 ): Promise<void> {
   const { socket } = context
 
   socket.leaveAll()
 }
 
-export async function ErrorEventHandler(context: ContextEvent): Promise<void> {
-  const { channel, socket, payload } = context
+export async function ErrorEventHandler(context: SocketContext): Promise<void> {
+  const { error } = context.payload
 
-  const { error } = payload
-
-  channel.to(socket.id).emit('error', error || payload)
+  return ErrorHandler(context, new SocketUnexpectedError(error))
 }
 
 export async function NewMessageEventHandler(
-  context: ContextEvent,
+  context: SocketContext,
 ): Promise<void> {
   try {
     const { socket, channel, payload } = context
@@ -57,6 +47,6 @@ export async function NewMessageEventHandler(
       channel.to(member._id).emit('newMessage', savedMessage)
     })
   } catch (err) {
-    console.error(err)
+    return ErrorHandler(context, new SocketUnexpectedError(err.message))
   }
 }

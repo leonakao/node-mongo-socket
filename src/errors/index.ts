@@ -1,1 +1,1 @@
-export * from './SocketAuthenticationError'
+export * from './chat'
