@@ -32,7 +32,7 @@ export async function Authentication(
       }
       // eslint-disable-next-line no-param-reassign
       socket.currentUser = user
-      return next()
+      return next(null, true)
     }
     return next(new SocketAuthenticationError('Invalid Token'), false)
   } catch (err) {
