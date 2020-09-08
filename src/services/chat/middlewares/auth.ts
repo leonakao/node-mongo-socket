@@ -17,11 +17,9 @@ export async function Authentication(
       Authorization === 'supt' ||
       Authorization === 'moto'
     ) {
-      let user = (
-        await User.find({
-          reference: { id: userId, type: Authorization },
-        }).limit(1)
-      )[0]
+      let user = await User.findOne({
+        reference: { id: userId, type: Authorization },
+      })
       if (!user) {
         user = await User.create({
           reference: {
