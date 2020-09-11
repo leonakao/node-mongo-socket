@@ -8,14 +8,21 @@ export async function Authentication(
 ): Promise<void> {
   try {
     const { Authorization, userId, userName } = socket.handshake.query
-    if (
-      Authorization === 'user' ||
-      Authorization === 'rest' ||
-      Authorization === 'supt' ||
-      Authorization === 'moto'
-    ) {
+
+    const AuthorizationKeys = [
+      { token: process.env.TOKEN_AUTH_USER, type: 'user' },
+      { token: process.env.TOKEN_AUTH_RESTAURANT, type: 'rest' },
+      { token: process.env.TOKEN_AUTH_SUPPORT, type: 'delivery' },
+      { token: process.env.TOKEN_AUTH_DELIVERY, type: 'supt' },
+    ]
+
+    const AuthorizedKey = AuthorizationKeys.find(
+      auth => auth.token === Authorization,
+    )
+
+    if (Authorization && AuthorizedKey) {
       let user = await User.findOne({
-        reference: { id: userId, type: Authorization },
+        reference: { id: userId, type: AuthorizedKey.type },
       })
       if (!user) {
         user = await User.create({

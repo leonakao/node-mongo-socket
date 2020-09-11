@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import User from '../../models/User'
+import User from '@models/User'
 
 export async function Authentication(
   request,
@@ -32,7 +32,6 @@ export async function Authentication(
       name: 'Anonymous',
       reference: userReference.reference,
       role: userReference.token,
-      devices: [],
     })
   }
 
