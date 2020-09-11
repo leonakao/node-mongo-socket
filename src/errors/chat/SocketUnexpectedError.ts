@@ -1,4 +1,4 @@
-import { DataSocketError } from '../protocols'
+import { DataSocketError } from '@/protocols'
 
 export class SocketUnexpectedError extends Error {
   data: DataSocketError

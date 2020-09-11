@@ -1,9 +1,6 @@
 import { Socket } from 'socket.io'
 import User from '@models/User'
-import {
-  SocketAuthenticationError,
-  SocketUnexpectedError,
-} from '../../../errors'
+import { SocketAuthenticationError, SocketUnexpectedError } from '@/errors'
 
 export async function Authentication(
   socket: Socket,

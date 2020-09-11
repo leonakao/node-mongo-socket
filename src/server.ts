@@ -1,6 +1,6 @@
 import http from 'http'
 import app from './app'
-import ChatService from './services/chat'
+import ChatService from './chat'
 
 const server = http.createServer(app)
 

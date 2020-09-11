@@ -6,7 +6,7 @@ import {
   DisconnectingEventHandler,
   ErrorEventHandler,
   NewMessageEventHandler,
-} from './helpers'
+} from './events'
 
 const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
 
