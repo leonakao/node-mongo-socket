@@ -8,14 +8,12 @@ import {
   NewMessageEventHandler,
 } from './events'
 
-const allowedOrigins = 'http://localhost:* http://127.0.0.1:*'
-
 export default {
   async init(server: http.Server): Promise<void> {
     const io = socketio(server, {
       pingInterval: 5000,
       pingTimeout: 1000,
-      origins: allowedOrigins,
+      origins: process.env.CHAT_ALLOWED_ORIGINS || '*:*',
     })
 
     const ChatManager = io.of('/chat')
