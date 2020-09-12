@@ -13,7 +13,6 @@ export async function Authentication(
 
     if (auth.authorized) {
       request.currentUser = auth.user
-      console.log(request.currentUser)
       return next()
     }
     response.status(401).json({ reason: auth.reason })
