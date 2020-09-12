@@ -18,7 +18,7 @@
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
     "dev:server": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts",
-    "start": "ts-node -r tsconfig-paths/register src/server.ts",
+    "start": "node dist/server.js",
     "lint": "eslint src/**/* --fix",
     "test": "jest"
   },
