@@ -12,7 +12,9 @@ const clientsList: Client[] = [
   { id: 6, name: 'Client 6' },
 ]
 
-export async function getClient(clientId: string | number): Promise<Client> {
+export async function getClientService(
+  clientId: string | number,
+): Promise<Client> {
   const result = clientsList.find(client => client.id === clientId)
 
   if (!result) {
