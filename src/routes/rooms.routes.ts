@@ -8,7 +8,17 @@ const roomsRoutes = Router()
 roomsRoutes.get('/', async (req, res) => {
   const rooms = await Room.find({
     members: { $elemMatch: { $eq: req.currentUser } },
-  }).populate('messages')
+  }).select({
+    name: 1,
+    open: 1,
+    _id: 1,
+    createdAt: 1,
+    updatedAt: 1,
+    members: 1,
+    countMessages: {
+      $size: '$messages',
+    },
+  })
 
   return res.json(rooms)
 })
