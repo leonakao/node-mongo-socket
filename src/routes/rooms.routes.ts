@@ -64,6 +64,11 @@ roomsRoutes.delete('/:roomId', async (req, res) => {
   res.status(204).send()
 })
 
+roomsRoutes.delete('/', async (req, res) => {
+  await Room.deleteMany({})
+  res.status(204).send()
+})
+
 roomsRoutes.use('/messages', messagesRoutes)
 
 export default roomsRoutes
