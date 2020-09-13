@@ -6,14 +6,16 @@ import messagesRoutes from './messages.routes'
 const roomsRoutes = Router()
 
 roomsRoutes.get('/', async (req, res) => {
-  let filters = {}
+  let filters = {
+    open: true,
+  }
 
   const { currentUser } = req
 
   if (currentUser.role !== 'support') {
-    filters = {
+    filters = Object.assign(filters, {
       members: { $elemMatch: { $eq: currentUser } },
-    }
+    })
   }
 
   const rooms = await Room.find(filters).select({
