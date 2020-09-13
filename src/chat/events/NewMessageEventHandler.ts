@@ -10,13 +10,16 @@ export async function NewMessageEventHandler(
   try {
     const { socket, channel, payload } = context
     const { roomId, message } = payload
+    const { currentUser } = socket
 
-    const room = await Room.findById(roomId).populate('members')
+    const room = await Room.findById(roomId)
     if (!room) throw new Error('Room not found')
+    if (room.members.indexOf(currentUser._id) === -1)
+      throw new Error('User not assigned to this room')
 
     const savedMessage = await Message.create({
       content: message,
-      from: socket.currentUser._id,
+      from: currentUser._id,
       room: room._id,
     })
 
@@ -30,7 +33,7 @@ export async function NewMessageEventHandler(
     room.save()
 
     room.members.forEach(member => {
-      channel.to(member._id).emit('newMessage', savedMessage)
+      channel.to(member).emit('newMessage', savedMessage)
     })
   } catch (err) {
     return SocketErrorHandler(context, new SocketUnexpectedError(err.message))
