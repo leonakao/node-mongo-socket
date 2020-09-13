@@ -26,6 +26,7 @@
       "endOfFile": "auto"
     }],
     "class-methods-use-this": "off",
+    "no-param-reassign": ["error", { "props": false }],
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

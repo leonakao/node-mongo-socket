@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io'
-import User from '@models/User'
+import { AuthenticationHelper } from '@/helpers'
 import { SocketAuthenticationError, SocketUnexpectedError } from '@/errors'
 
 export async function Authentication(
@@ -7,38 +7,16 @@ export async function Authentication(
   next: Function,
 ): Promise<void> {
   try {
-    const { Authorization, userId, userName } = socket.handshake.query
+    const { Authorization, Identification } = socket.handshake.query
 
-    const AuthorizationKeys = [
-      { token: process.env.TOKEN_AUTH_USER, type: 'user' },
-      { token: process.env.TOKEN_AUTH_RESTAURANT, type: 'rest' },
-      { token: process.env.TOKEN_AUTH_SUPPORT, type: 'delivery' },
-      { token: process.env.TOKEN_AUTH_DELIVERY, type: 'supt' },
-    ]
+    const auth = await AuthenticationHelper(Authorization, Identification)
 
-    const AuthorizedKey = AuthorizationKeys.find(
-      auth => auth.token === Authorization,
-    )
-
-    if (Authorization && AuthorizedKey) {
-      let user = await User.findOne({
-        reference: { id: userId, type: AuthorizedKey.type },
-      })
-      if (!user) {
-        user = await User.create({
-          reference: {
-            id: userId,
-            type: Authorization,
-          },
-          role: Authorization,
-          name: userName,
-        })
-      }
-      // eslint-disable-next-line no-param-reassign
-      socket.currentUser = user
+    if (auth.authorized) {
+      socket.currentUser = auth.user
       return next(null, true)
     }
-    return next(new SocketAuthenticationError('Invalid Token'), false)
+
+    return next(new SocketAuthenticationError(auth.reason), false)
   } catch (err) {
     return next(new SocketUnexpectedError(err.message), false)
   }

@@ -1,15 +1,18 @@
-import { Response } from 'express'
+import { Response, Request } from 'express'
 import { AuthenticationHelper } from '@/helpers'
 
 export async function Authentication(
-  request,
+  request: Request,
   response: Response,
   next: Function,
 ): Promise<void | Response> {
   try {
-    const { authorization, identification } = request.headers
+    const { identification, authorization } = request.headers
 
-    const auth = await AuthenticationHelper(authorization, identification)
+    const auth = await AuthenticationHelper(
+      authorization,
+      identification as string,
+    )
 
     if (auth.authorized) {
       request.currentUser = auth.user
