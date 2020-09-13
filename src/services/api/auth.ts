@@ -25,17 +25,15 @@ export async function AuthenticationService(
       userId = result.data.userId
     } catch (err) {
       authorized = false
+      reason = 'Authentication service unavailable'
       if (err.code === 'ECONNREFUSED') {
         const id = tokensDefault.indexOf(token)
         if (id > -1) {
           return Promise.resolve({
             authorized: true,
-            userId: '1',
+            userId: (id + 1).toString(),
           })
         }
-        reason = 'Authentication service unavailable'
-      } else {
-        reason = err
       }
     }
   } else {

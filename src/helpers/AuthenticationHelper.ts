@@ -54,8 +54,9 @@ export async function AuthenticationHelper(
               role: typeAuthorized.role,
               name: userData.name,
             })
+          } else {
+            throw new UnexpectedError('User data not found')
           }
-          throw new UnexpectedError('User data not found')
         } catch (err) {
           throw new UnexpectedError(err.message)
         }
