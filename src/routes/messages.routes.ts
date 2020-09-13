@@ -7,9 +7,13 @@ const messagesRoutes = Router()
 messagesRoutes.get('/:roomId', async (req, res) => {
   const room = await Room.findById(req.params.roomId)
 
+  if (!room) {
+    return res.status(404).json({ message: 'Room not found' })
+  }
+
   if (
     room.members.indexOf(req.currentUser._id) === -1 &&
-    req.currentUser.role !== 'supt'
+    req.currentUser.role !== 'support'
   ) {
     return res.status(403).send()
   }
