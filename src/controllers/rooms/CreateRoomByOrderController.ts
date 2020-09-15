@@ -4,7 +4,7 @@ import Room from '@models/Room'
 import { UnexpectedError } from '@/errors'
 import { ErrorHandler } from '@/utils'
 
-export class GetRoomsController implements ControllerProtocol {
+export class CreateRoomByOrderController implements ControllerProtocol {
   async handle(req: Request): Promise<HttpResponse> {
     try {
       let filters = {

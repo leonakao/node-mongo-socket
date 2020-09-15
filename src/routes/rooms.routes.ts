@@ -3,7 +3,7 @@ import Room from '@models/Room'
 import {
   GetRoomByOrderController,
   GetRoomsController,
-  CreateRoomController,
+  CreateRoomByOrderController,
 } from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 import { NotIsRestaurant } from './middlewares'
@@ -23,7 +23,7 @@ roomsRoutes.get('/order/:orderId', NotIsRestaurant, async (req, res) => {
 })
 
 roomsRoutes.post('/', async (req, res) => {
-  const controller = new CreateRoomController()
+  const controller = new CreateRoomByOrderController()
   const response = await controller.handle(req)
   return res.status(response.status).json(response.body)
 })
