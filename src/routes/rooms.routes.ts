@@ -1,38 +1,19 @@
 import { Router } from 'express'
 import User from '@models/User'
 import Room from '@models/Room'
-import { GetRoomByOrderController } from '@/controllers/rooms'
+import {
+  GetRoomByOrderController,
+  GetRoomsController,
+} from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 import { NotIsRestaurant } from './middlewares'
 
 const roomsRoutes = Router()
 
 roomsRoutes.get('/', async (req, res) => {
-  let filters = {
-    open: true,
-  }
-
-  const { currentUser } = req
-
-  if (currentUser.role !== 'support') {
-    filters = Object.assign(filters, {
-      members: { $elemMatch: { $eq: currentUser } },
-    })
-  }
-
-  const rooms = await Room.find(filters).select({
-    name: 1,
-    open: 1,
-    _id: 1,
-    createdAt: 1,
-    updatedAt: 1,
-    members: 1,
-    countMessages: {
-      $size: '$messages',
-    },
-  })
-
-  return res.json(rooms)
+  const controller = new GetRoomsController()
+  const response = await controller.handle(req)
+  return res.status(response.status).json(response.body)
 })
 
 roomsRoutes.get('/order/:orderId', NotIsRestaurant, async (req, res) => {
