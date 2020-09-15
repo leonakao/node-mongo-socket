@@ -18,8 +18,8 @@ export async function Authentication(
       request.currentUser = auth.user
       return next()
     }
-    response.status(401).json({ reason: auth.reason })
+    return response.status(401).json({ reason: auth.reason })
   } catch (err) {
-    response.status(err.status || 500).json({ reason: err.message })
+    return response.status(err.status || 500).json({ reason: err.message })
   }
 }
