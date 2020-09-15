@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import User from '@models/User'
 import Room from '@models/Room'
+import { GetRoomByOrderController } from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 
 const roomsRoutes = Router()
@@ -31,6 +32,12 @@ roomsRoutes.get('/', async (req, res) => {
   })
 
   return res.json(rooms)
+})
+
+roomsRoutes.get('/order/:orderId', async (req, res) => {
+  const controller = new GetRoomByOrderController()
+  const response = await controller.handle(req)
+  res.status(response.status).json(response.body)
 })
 
 roomsRoutes.post('/', async (req, res) => {

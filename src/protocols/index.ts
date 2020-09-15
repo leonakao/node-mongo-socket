@@ -1,3 +1,7 @@
 export * from './DataSocketError'
 export * from './SocketContext'
 export * from './SocketError'
+export * from './Http'
+export * from './ControllerProtocol'
+export * from './Interfaces'
+export * from './Errors'
