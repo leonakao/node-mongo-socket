@@ -1,2 +1,2 @@
 export * from './GetRoomByOrderController'
-export * from './getRoomsController'
+export * from './GetRoomsController'
