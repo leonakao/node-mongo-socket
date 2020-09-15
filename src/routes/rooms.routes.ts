@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import User from '@models/User'
 import Room from '@models/Room'
 import {
   GetRoomByOrderController,
   GetRoomsController,
+  CreateRoomController,
 } from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 import { NotIsRestaurant } from './middlewares'
@@ -23,29 +23,9 @@ roomsRoutes.get('/order/:orderId', NotIsRestaurant, async (req, res) => {
 })
 
 roomsRoutes.post('/', async (req, res) => {
-  const { members = [], name, type = 'user_order', orderId } = req.body
-
-  if (type === 'user_order') {
-    const rest = await User.findOne({
-      'reference.type': 'rest',
-    })
-    if (rest) {
-      members.push(rest._id)
-    }
-  }
-
-  if (req.currentUser) {
-    members.push(req.currentUser._id)
-  }
-
-  const room = await Room.create({
-    name,
-    members,
-    type,
-    orderId,
-  })
-
-  return res.status(201).json(room)
+  const controller = new CreateRoomController()
+  const response = await controller.handle(req)
+  return res.status(response.status).json(response.body)
 })
 
 roomsRoutes.delete('/:roomId', async (req, res) => {
