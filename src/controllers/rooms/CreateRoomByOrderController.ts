@@ -1,39 +1,38 @@
 import { ControllerProtocol, HttpResponse } from '@/protocols'
 import { Request } from 'express'
 import Room from '@models/Room'
+import User from '@models/User'
 import { UnexpectedError } from '@/errors'
 import { ErrorHandler } from '@/utils'
 
 export class CreateRoomByOrderController implements ControllerProtocol {
   async handle(req: Request): Promise<HttpResponse> {
     try {
-      let filters = {
-        open: true,
-      }
+      const { members = [], name, type = 'user_order', orderId } = req.body
 
-      const { currentUser } = req
-
-      if (currentUser.role !== 'support') {
-        filters = Object.assign(filters, {
-          members: { $elemMatch: { $eq: currentUser } },
+      if (type === 'user_order') {
+        const rest = await User.findOne({
+          'reference.type': 'rest',
         })
+        if (rest) {
+          members.push(rest._id)
+        }
       }
 
-      const rooms = await Room.find(filters).select({
-        name: 1,
-        open: 1,
-        _id: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        members: 1,
-        countMessages: {
-          $size: '$messages',
-        },
+      if (req.currentUser) {
+        members.push(req.currentUser._id)
+      }
+
+      const room = await Room.create({
+        name,
+        members,
+        type,
+        orderId,
       })
 
       return {
-        status: 200,
-        body: rooms,
+        status: 201,
+        body: room,
       }
     } catch (err) {
       return ErrorHandler(new UnexpectedError(err.message))
