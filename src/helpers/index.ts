@@ -1,2 +1,3 @@
 export * from './AuthenticationHelper'
-export * from './FindOrderHelper'
+export * from './FindOrder'
+export * from './FindRestaurantById'

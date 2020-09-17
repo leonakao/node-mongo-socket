@@ -40,6 +40,7 @@ export class GetRoomByOrderController implements ControllerProtocol {
         body: room,
       }
     } catch (err) {
+      console.log(err)
       return ErrorHandler(new UnexpectedError(err.message))
     }
   }

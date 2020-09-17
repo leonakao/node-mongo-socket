@@ -1,7 +1,7 @@
 import User, { UserDocument } from '@models/User'
 import { AuthenticationError, UnexpectedError } from '@/errors'
 import { AuthenticationService, FindUserById } from '@/services/api'
-import { endPoints } from '@config/api'
+import { EndPoints } from '@config/api'
 
 interface AuthenticationResult {
   authorized: boolean
@@ -30,7 +30,7 @@ export async function AuthenticationHelper(
         reason: 'Invalid identification token',
       })
     }
-    const typeEndPoints = endPoints.find(
+    const typeEndPoints = EndPoints.find(
       endPoint => endPoint.type === typeAuthorized.type,
     )
     if (!typeEndPoints) {

@@ -2,6 +2,7 @@ import { getOrderDetails } from '@/services/api'
 import { OrderInterface } from '@/protocols'
 import User from '@models/User'
 import { NotFoundError } from '@/errors'
+import { FindRestaurantById } from '.'
 
 export async function FindOrderHelper(
   orderId: string,
@@ -16,9 +17,7 @@ export async function FindOrderHelper(
       },
     })
 
-    const restaurant = await User.findOne({
-      reference: { type: 'restaurant', id: order.restaurant },
-    })
+    const restaurant = await FindRestaurantById(order.restaurant)
 
     const delivery = await User.findOne({
       reference: { type: 'delivery', id: order.delivery || '0' },

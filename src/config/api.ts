@@ -4,7 +4,7 @@ export default {
   baseURL: process.env.SERVICE_API_BASE_URL || '',
 }
 
-export const endPoints = [
+export const EndPoints = [
   { type: 'user', auth: 'auth/user', find: 'user' },
   { type: 'rest', auth: 'auth/rest', find: 'rest' },
   { type: 'supt', auth: 'auth/supt', find: 'supt' },
