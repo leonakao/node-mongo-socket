@@ -4,6 +4,7 @@ import {
   GetRoomByOrderController,
   GetRoomsController,
   CreateRoomByOrderController,
+  GetRoomController,
 } from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 import { NotIsRestaurant } from './middlewares'
@@ -12,6 +13,12 @@ const roomsRoutes = Router()
 
 roomsRoutes.get('/', async (req, res) => {
   const controller = new GetRoomsController()
+  const response = await controller.handle(req)
+  return res.status(response.status).json(response.body)
+})
+
+roomsRoutes.get('/:roomId', async (req, res) => {
+  const controller = new GetRoomController()
   const response = await controller.handle(req)
   return res.status(response.status).json(response.body)
 })
