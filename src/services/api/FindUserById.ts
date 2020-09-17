@@ -7,12 +7,12 @@ interface User {
 }
 
 const usersDefault: User[] = [
-  { id: '1', name: 'User Default 1' },
-  { id: '2', name: 'User Default 2' },
-  { id: '3', name: 'User Default 3' },
-  { id: '4', name: 'User Default 4' },
-  { id: '5', name: 'User Default 5' },
-  { id: '6', name: 'User Default 6' },
+  { id: '1', name: 'Account Default 1' },
+  { id: '2', name: 'Account Default 2' },
+  { id: '3', name: 'Account Default 3' },
+  { id: '4', name: 'Account Default 4' },
+  { id: '5', name: 'Account Default 5' },
+  { id: '6', name: 'Account Default 6' },
 ]
 
 export async function FindUserById(

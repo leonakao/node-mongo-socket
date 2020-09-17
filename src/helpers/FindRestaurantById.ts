@@ -6,7 +6,7 @@ export async function FindRestaurantById(
   restaurantId: string,
 ): Promise<UserDocument> {
   let restaurant = await User.findOne({
-    reference: { type: 'restaurant', id: restaurantId },
+    reference: { id: restaurantId, type: 'rest' },
   })
 
   if (!restaurant) {
@@ -19,7 +19,7 @@ export async function FindRestaurantById(
 
     restaurant = await User.create({
       name: restaurantData.name,
-      reference: { type: 'restaurant', id: restaurantData.id },
+      reference: { id: restaurantData.id, type: 'rest' },
       role: 'restaurant',
     })
   }
