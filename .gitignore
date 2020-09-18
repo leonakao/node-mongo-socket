@@ -6,3 +6,4 @@
 .docker/data
 .vscode
 .env
+debug.log
