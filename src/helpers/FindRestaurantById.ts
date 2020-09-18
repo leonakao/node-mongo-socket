@@ -1,5 +1,5 @@
 import User, { UserDocument } from '@models/User'
-import { FindUserById } from '@/services/api'
+import { ServiceFindUserById } from '@/services/api'
 import { EndPoints } from '@config/api'
 
 export async function FindRestaurantById(
@@ -15,7 +15,7 @@ export async function FindRestaurantById(
     )
 
     const findEndPoint = restaurantEndPoints.find
-    const restaurantData = await FindUserById(restaurantId, findEndPoint)
+    const restaurantData = await ServiceFindUserById(restaurantId, findEndPoint)
 
     restaurant = await User.create({
       name: restaurantData.name,

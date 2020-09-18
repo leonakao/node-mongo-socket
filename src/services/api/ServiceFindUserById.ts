@@ -15,7 +15,7 @@ const usersDefault: User[] = [
   { id: '6', name: 'Account Default 6' },
 ]
 
-export async function FindUserById(
+export async function ServiceFindUserById(
   id: string,
   endpoint: string,
 ): Promise<Partial<UserDocument>> {

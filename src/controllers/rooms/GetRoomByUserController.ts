@@ -1,37 +1,36 @@
 import { ControllerProtocol, HttpResponse } from '@/protocols'
 import { Request } from 'express'
 import Room from '@models/Room'
-import { FindOrderHelper } from '@/helpers'
+import { FindUserById } from '@/helpers'
 import { NotFoundError, UnexpectedError } from '@/errors'
 import { ErrorHandler } from '@/utils'
 
-export class GetRoomByOrderController implements ControllerProtocol {
+export class GetRoomByUserController implements ControllerProtocol {
   async handle(req: Request): Promise<HttpResponse> {
     try {
-      const { orderId } = req.params
+      const { userId } = req.params
+
+      const user = await FindUserById(userId)
+
+      if (!user) {
+        return ErrorHandler(new NotFoundError('User'))
+      }
 
       let room = await Room.findOne({
-        orderId,
+        members: { $elemMatch: { $eq: user._id } },
+        type: 'support_user',
       })
 
       if (!room) {
         const { currentUser } = req
-        if (currentUser.role === 'support')
-          return ErrorHandler(new NotFoundError('room'))
-        const order = await FindOrderHelper(orderId)
-        if (!order) return ErrorHandler(new NotFoundError('order'))
 
-        const members = [currentUser._id, order.restaurant._id]
-        const type =
-          currentUser.reference.type === 'user'
-            ? 'user_order'
-            : 'delivery_order'
+        const members = [currentUser._id, user._id]
+        const type = 'support_user'
 
         room = await Room.create({
           members,
           type,
-          name: `Order ${order.id}`,
-          orderId,
+          name: `User ${user.reference.id}`,
         })
       }
 
