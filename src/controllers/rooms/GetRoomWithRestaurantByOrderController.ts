@@ -5,7 +5,8 @@ import { FindOrderHelper } from '@/helpers'
 import { NotFoundError, UnexpectedError } from '@/errors'
 import { ErrorHandler } from '@/utils'
 
-export class GetRoomByOrderController implements ControllerProtocol {
+export class GetRoomWithRestaurantByOrderController
+  implements ControllerProtocol {
   async handle(req: Request): Promise<HttpResponse> {
     try {
       const { orderId } = req.params

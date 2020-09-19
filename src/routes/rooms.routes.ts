@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import Room from '@models/Room'
 import {
-  GetRoomByOrderController,
+  GetRoomWithRestaurantByOrderController,
   GetRoomsController,
   CreateRoomByOrderController,
   GetRoomController,
@@ -30,11 +30,16 @@ roomsRoutes.get('/:roomId', async (req, res) => {
   return res.status(response.status).json(response.body)
 })
 
-roomsRoutes.get('/order/:orderId', NotIsRestaurant, async (req, res) => {
-  const controller = new GetRoomByOrderController()
-  const response = await controller.handle(req)
-  res.status(response.status).json(response.body)
-})
+roomsRoutes.get(
+  '/order/:orderId/restaurant',
+  NotIsRestaurant,
+  NotIsSupport,
+  async (req, res) => {
+    const controller = new GetRoomWithRestaurantByOrderController()
+    const response = await controller.handle(req)
+    res.status(response.status).json(response.body)
+  },
+)
 
 roomsRoutes.get(
   '/order/:orderId/user',

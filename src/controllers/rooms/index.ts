@@ -1,4 +1,4 @@
-export * from './GetRoomByOrderController'
+export * from './GetRoomWithRestaurantByOrderController'
 export * from './GetRoomsController'
 export * from './CreateRoomByOrderController'
 export * from './GetRoomController'
