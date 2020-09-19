@@ -1,6 +1,6 @@
 import User, { UserDocument } from '@models/User'
 import { AuthenticationError, UnexpectedError } from '@/errors'
-import { AuthenticationService, FindUserById } from '@/services/api'
+import { AuthenticationService, ServiceFindUserById } from '@/services/api'
 import { EndPoints } from '@config/api'
 
 interface AuthenticationResult {
@@ -44,7 +44,10 @@ export async function AuthenticationHelper(
       })
       if (!user) {
         try {
-          const userData = await FindUserById(auth.userId, typeEndPoints.find)
+          const userData = await ServiceFindUserById(
+            auth.userId,
+            typeEndPoints.find,
+          )
           if (userData) {
             user = await User.create({
               reference: {
