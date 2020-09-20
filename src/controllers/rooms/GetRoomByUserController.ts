@@ -30,7 +30,7 @@ export class GetRoomByUserController implements ControllerProtocol {
         room = await Room.create({
           members,
           type,
-          name: `User ${user.reference.id}`,
+          name: `Support with User ${user.reference.id}`,
         })
       }
 
