@@ -10,27 +10,27 @@ export class GetRoomByRestaurantController implements ControllerProtocol {
     try {
       const { restaurantId } = req.params
 
-      const user = await FindRestaurantById(restaurantId)
+      const restaurant = await FindRestaurantById(restaurantId)
 
-      if (!user) {
+      if (!restaurant) {
         return ErrorHandler(new NotFoundError('Restaurant'))
       }
 
       const type = 'support_restaurant'
 
       let room = await Room.findOne({
-        members: { $elemMatch: { $eq: user._id } },
+        members: { $elemMatch: { $eq: restaurant._id } },
         type,
       })
 
       if (!room) {
         const { currentUser } = req
 
-        const members = [currentUser._id, user._id]
+        const members = [currentUser._id, restaurant._id]
         room = await Room.create({
           members,
           type,
-          name: `Support with Restaurant ${user.reference.id}`,
+          name: `Support with Restaurant ${restaurant.reference.id}`,
         })
       }
 
