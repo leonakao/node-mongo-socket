@@ -11,10 +11,15 @@ export class GetRoomWithUserByOrderController implements ControllerProtocol {
       const { currentUser, params } = req
       const { orderId } = params
 
-      const type =
-        currentUser.reference.type === 'delivery'
-          ? 'user_order_delivery'
-          : 'user_order'
+      const type = ((): string => {
+        if (currentUser.role === 'delivery') return 'user_order_delivery'
+        if (currentUser.role === 'restaurant') return 'user_order'
+        return undefined
+      })()
+
+      if (!type) {
+        throw new Error('Current User unexpected')
+      }
 
       let room = await Room.findOne({
         orderId,
@@ -30,7 +35,7 @@ export class GetRoomWithUserByOrderController implements ControllerProtocol {
         room = await Room.create({
           members,
           type,
-          name: `Order ${order.id}`,
+          name: `Order ${order.id} - user with ${currentUser.role}`,
           orderId,
         })
       }
