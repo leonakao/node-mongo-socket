@@ -13,7 +13,12 @@ const TypesAuthorizations = [
   { type: 'user', token: 'user', endPoint: 'auth/user', role: 'user' },
   { type: 'rest', token: 'rest', endPoint: 'auth/rest', role: 'restaurant' },
   { type: 'supt', token: 'supt', endPoint: 'auth/supt', role: 'support' },
-  { type: 'moto', token: 'moto', endPoint: 'auth/moto', role: 'delivery' },
+  {
+    type: 'delivery',
+    token: 'delivery',
+    endPoint: 'auth/delivery',
+    role: 'delivery',
+  },
 ]
 
 export async function AuthenticationHelper(

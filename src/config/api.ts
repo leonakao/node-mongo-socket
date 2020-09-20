@@ -8,5 +8,5 @@ export const EndPoints = [
   { type: 'user', auth: 'auth/user', find: 'user' },
   { type: 'rest', auth: 'auth/rest', find: 'rest' },
   { type: 'supt', auth: 'auth/supt', find: 'supt' },
-  { type: 'moto', auth: 'auth/moto', find: 'moto' },
+  { type: 'delivery', auth: 'auth/delivery', find: 'delivery' },
 ]

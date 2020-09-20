@@ -9,6 +9,7 @@ import {
   GetRoomWithUserByOrderController,
   GetRoomWithDeliveryByOrderController,
   GetRoomByRestaurantController,
+  GetRoomByDeliveryController,
 } from '@/controllers/rooms'
 import messagesRoutes from './messages.routes'
 import {
@@ -74,6 +75,12 @@ roomsRoutes.get('/user/:userId', IsSupport, async (req, res) => {
 
 roomsRoutes.get('/restaurant/:restaurantId', IsSupport, async (req, res) => {
   const controller = new GetRoomByRestaurantController()
+  const response = await controller.handle(req)
+  res.status(response.status).json(response.body)
+})
+
+roomsRoutes.get('/delivery/:deliveryId', IsSupport, async (req, res) => {
+  const controller = new GetRoomByDeliveryController()
   const response = await controller.handle(req)
   res.status(response.status).json(response.body)
 })
