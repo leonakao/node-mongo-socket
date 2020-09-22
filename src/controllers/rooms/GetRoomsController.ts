@@ -15,21 +15,21 @@ export class GetRoomsController implements ControllerProtocol {
 
       if (currentUser.role !== 'support') {
         filters = Object.assign(filters, {
-          members: { $elemMatch: { $eq: currentUser } },
+          members: { $elemMatch: { $eq: currentUser._id } },
         })
       }
 
-      const rooms = await Room.find(filters).select({
-        name: 1,
-        open: 1,
-        _id: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        members: 1,
-        countMessages: {
-          $size: '$messages',
-        },
-      })
+      const rooms = await Room.aggregate()
+        .match(filters)
+        .project({
+          name: 1,
+          open: 1,
+          _id: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          members: 1,
+          countMessages: { $size: '$messages' },
+        })
 
       return {
         status: 200,

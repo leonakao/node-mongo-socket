@@ -15,7 +15,7 @@ services:
     depends_on:
       - db
   db:
-    image: mongo
+    image: mongo:4.2
     container_name: chat-db
     ports:
       - '27017:27017'
